@@ -14,8 +14,10 @@ if( $( '.waypoint' ).length > 0 ){
 			{ page: next_page },
 			function( data, txt, jqXHR ) {
 				$( '#tumblr-posts-wrapper' ).append( $( data ) );
-				registerNewWaypointListener();
-				next_page++;
+				if( $( data ).length > 0 ){
+					registerNewWaypointListener();
+					next_page++;
+				}
 			}
 		);
 	}

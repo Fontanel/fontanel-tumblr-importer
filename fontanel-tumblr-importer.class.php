@@ -10,7 +10,7 @@
 				
 				add_filter( 'cron_schedules', array( &$this, 'add_fiveminutely' ) );
 				
-				add_action( 'my_fiveminutely_event', array( &$this, 'fetch_posts' ) );
+				add_action( 'my_fiveminutely_event', array( &$this, 'fetch_post' ) );
 				add_action( 'admin_init', array( &$this, 'register_editable_settings' ) );
 				add_action( 'admin_menu', array( &$this, 'add_plugin_menu' ) );
 				add_action( 'wp_enqueue_scripts', array( &$this, 'register_fontanel_tumblr_import_scripts' ) );
@@ -51,12 +51,12 @@
 			}
 			
 			private function deactivate_periodical_call() {
-				$hook = 'fetch_posts';
+				$hook = 'fetch_post';
 				
 				wp_clear_scheduled_hook( $hook );
 			}
 	
-			private function fetch_posts() {
+			private function fetch_post() {
 				$chandle = curl_init();
 				$url = 'http://api.tumblr.com/v2/blog/fnerdings.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' ) . '&limit=1';
 				curl_setopt( $chandle, CURLOPT_URL, $url );
@@ -72,13 +72,39 @@
 				global $wpdb;
 				$json_object = json_decode( $json_string );
 				$last_post = $json_object->response->posts[0];
-				$last_db_entry = $wpdb->get_results( "SELECT `part` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` WHERE	`time` =" . $last_post->timestamp . " ORDER BY `part` DESC LIMIT 1" );
+				$last_db_entry = $wpdb->get_results( "SELECT `part` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` WHERE	`time` = " . $last_post->timestamp . " ORDER BY `part` DESC LIMIT 1" );
 				
 				if( !$last_db_entry ) {
 					$new_post = serialize( $last_post );
 					$wpdb->insert( FONTANEL_TUMBLR_IMPORTER_TABLE_NAME, array( 'post' => $new_post, 'time' => $last_post->timestamp ) );
 				}
 			}
+			
+			
+			
+			private function fetch_old_posts() {
+				$chandle = curl_init();
+				$url = 'http://api.tumblr.com/v2/blog/fnerdings.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' );
+				curl_setopt( $chandle, CURLOPT_URL, $url );
+				curl_setopt( $chandle, CURLOPT_RETURNTRANSFER, 1 );
+				$result = curl_exec( $chandle );
+				
+				curl_close( $chandle );
+				
+				global $wpdb;
+				$json_object = json_decode( $result );
+				$old_posts = $json_object->response->posts;
+				foreach( $old_posts as $old_post ):
+					$last_db_entry = $wpdb->get_results( "SELECT `part` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` WHERE	`time` = " . $old_post->timestamp );
+					
+					if( !$last_db_entry ) {
+						$new_post = serialize( $old_post );
+						$wpdb->insert( FONTANEL_TUMBLR_IMPORTER_TABLE_NAME, array( 'post' => $new_post, 'time' => $old_post->timestamp ) );
+					}
+				endforeach;
+			}
+	
+	
 	
 			private function create_tables() {
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -92,6 +118,8 @@
 				
 				dbDelta( $sql );
 			}	
+
+
 
 			function register_editable_settings() {
 				register_setting( 'fontanel_tumblr_importer_section', 'fontanel_tumblr_importer_api_key', array( &$this, 'sanitize_fontanel_tumblr_importer_api_key' ) );

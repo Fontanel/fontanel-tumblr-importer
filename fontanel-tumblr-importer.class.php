@@ -178,7 +178,7 @@
 			}
 			
 			public function ajaxUrl() {
-				return plugins_url();
+				return plugins_url() . '/fontanel-tumblr-importer/fontanel-tumblr-importer.ajax.php';
 			}
 		}
 	endif;

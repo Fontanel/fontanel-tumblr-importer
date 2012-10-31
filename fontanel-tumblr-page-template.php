@@ -17,7 +17,7 @@
 		<?php endforeach; ?>
 	</div>
 	
-	<div class="waypoint" data-ajax-url="<?php echo $MyFontanelTumblrImporter->ajaxUrl(); ?>/fontanel-tubmlr-importer/fontanel-tumblr-importer.ajax.php"></div>
+	<div class="waypoint" data-ajax-url="<?php echo $MyFontanelTumblrImporter->ajaxUrl(); ?>"></div>
 
 <?php
 	get_sidebar();

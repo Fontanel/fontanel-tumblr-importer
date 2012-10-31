@@ -169,7 +169,7 @@
 			public function getPosts( $page = 0, $rate = 5, $simple = true ) {
 				global $wpdb; // To be able to reach all db data
 		
-				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `part` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
+				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `part` ASC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
 				
 				$tumblr_posts = []; // A storage for deserialized posts
 				
@@ -188,13 +188,32 @@
 					
 						<?php switch( $tumblr_post->type ):
 							case 'link': ?>
-								<?php // print_r( $tumblr_post ); ?>
 								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
 								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo $tumblr_post->description;?></p>
+									<p><?php echo $tumblr_post->description; ?></p>
 								<?php endif; ?>
-								<?php break;?>
+								<?php break; ?>
+							
+							<?php case 'text': ?>
+								<?php if( $tumblr_post->title ): ?>
+									<h3><?php echo $tumblr_post->title; ?></h3>
+									<?php if( $tumblr_post->body ): ?>
+										<p><?php echo $tumblr_post->body; ?></p>
+									<?php endif; ?>
+								<?php endif; ?>
+								<?php break; ?>
 								
+							<?php case 'quote': ?>
+								<blockquote><?php echo $tumblr_post->text; ?></blockquote>
+								<?php if( $tumblr_post->source ): ?>
+									<p><?php echo $tumblr_post->source; ?></p>
+								<?php endif; ?>
+								<?php break; ?>
+							
+							<?php case 'video': ?>
+								<?php echo $tumblr_post->player[0]->embed_code; ?>
+								<?php break; ?>
+	
 							<?php default: ?>
 								<p>Unknown Tumblr format</p>
 						<?php endswitch; ?>

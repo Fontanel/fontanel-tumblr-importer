@@ -144,6 +144,7 @@
 			}
 			
 			function sanitize_fontanel_tumblr_importer_api_key( $input ) {
+				$this->fetch_old_posts();
 				return $input['fontanel_tumblr_importer_api_key_field'];
 			}
 			
@@ -183,7 +184,7 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ): ?>
-					<article style="height: 300px;">
+					<article style="min-height: 300px;">
 					
 						<?php switch( $tumblr_post->type ):
 							case 'link': ?>

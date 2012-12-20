@@ -33,7 +33,7 @@
 
 
 		
-			private function add_fiveminutely( $schedules ) {
+			public function add_fiveminutely( $schedules ) {
 				$schedules['fiveminutely'] = array(
 					'interval' => ( 60 * 5 ),
 					'display' => __( 'Once every five minutes' )

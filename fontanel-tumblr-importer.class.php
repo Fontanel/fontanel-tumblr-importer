@@ -220,7 +220,7 @@
 						<?php endswitch; ?>
 						
 						<footer>
-							<p>From <a href="<?php echo $tumblr_post->post_url; ?>" target="_blank"><?php echo $tumblr_post->blog_name; ?></a>, posted on <?php echo date( 'Y-m-d', $tumblr_post->timestamp ); ?>.</p>
+							<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank"><?php echo $tumblr_post->title; ?></a> &raquo;</p>
 						</footer>
 					</article>
 				<?php endif;

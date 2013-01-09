@@ -185,7 +185,7 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ): ?>
-					<article style="min-height: 300px;">
+					<article>
 					
 						<?php switch( $tumblr_post->type ):
 							case 'link': ?>

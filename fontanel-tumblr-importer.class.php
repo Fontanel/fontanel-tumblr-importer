@@ -149,6 +149,7 @@
 			}
 			
 			function sanitize_fontanel_tumblr_importer_blog_url( $input ) {
+  			$this->fetch_old_posts();
 				return $input['fontanel_tumblr_importer_blog_url_field'];
 			}
 			

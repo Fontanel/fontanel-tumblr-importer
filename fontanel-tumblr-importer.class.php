@@ -17,10 +17,10 @@
 				
 				add_option( 'fontanel_tumblr_importer_api_key' );
 				add_option( 'fontanel_tumblr_importer_blog_url' );
-			
-				register_activation_hook( __FILE__, array( &$this, 'activate_periodical_call' ) );
-				register_deactivation_hook( __FILE__, array( &$this, 'deactivate_periodical_call' ) );
-				register_activation_hook( __FILE__, array( &$this, 'create_tables' ) );
+				
+				register_activation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'activate_periodical_call' ) );
+				register_deactivation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'deactivate_periodical_call' ) );
+				register_activation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'create_tables' ) );
 			}
 			
 			function register_fontanel_tumblr_import_scripts() {
@@ -32,7 +32,35 @@
 			}
 
 
+			
+			// TODO: figure out why this used to work but doesn't anymore
+			private function ugly_initialize() {
+				$this->activate_periodical_call();
+				$this->create_tables();
+			}
+			
+			private function plugin_symlink_path( $file ) {
+		    // If the file is already in the plugin directory we can save processing time.
+		    if ( preg_match( '/'.preg_quote( WP_PLUGIN_DIR, '/' ).'/i', $file ) ) return $file;
 		
+		    // Examine each segment of the path in reverse
+		    foreach ( array_reverse( explode( '/', $file ) ) as $segment ) {
+		      // Rebuild the path starting from the WordPress plugin directory
+		      // until both resolved paths match.
+		
+		      $path = rtrim($segment .'/'. $path, '/');       
+		
+		      if ( __FILE__ == realpath( WP_PLUGIN_DIR . '/' . $path ) ) {
+		        return WP_PLUGIN_DIR . '/' . $path;
+		      }
+		    }
+		
+		    // If all else fails, return the original path.
+		    return $file;
+			}
+
+
+			
 			public function add_fiveminutely( $schedules ) {
 				$schedules['fiveminutely'] = array(
 					'interval' => ( 60 * 5 ),
@@ -42,7 +70,8 @@
 			}
 	
 	
-			private function activate_periodical_call() {
+	
+			public function activate_periodical_call() {
 				$timestamp = time();
 				$recurrence = 'fiveminutely';
 				$hook = 'my_fiveminutely_event';
@@ -50,11 +79,25 @@
 				wp_schedule_event( $timestamp, $recurrence, $hook );
 			}
 			
-			private function deactivate_periodical_call() {
+			
+			
+			public function deactivate_periodical_call() {
 				$hook = 'fetch_post';
 				
 				wp_clear_scheduled_hook( $hook );
 			}
+			
+			
+			
+			public function create_tables() {
+				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		
+				$sql = "CREATE TABLE IF NOT EXISTS " . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . " ( part mediumint(9) NOT NULL AUTO_INCREMENT, time int NOT NULL, post text NOT NULL, PRIMARY KEY(part) );";
+				
+				dbDelta( $sql );
+			}	
+			
+			
 	
 			private function fetch_post() {
 				$chandle = curl_init();
@@ -103,21 +146,6 @@
 					}
 				endforeach;
 			}
-	
-	
-	
-			private function create_tables() {
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		
-				$sql = "CREATE TABLE IF NOT EXISTS " . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . " (
-					part mediumint(9) NOT NULL AUTO_INCREMENT,
-					time int NOT NULL,
-					post text NOT NULL,
-					PRIMARY KEY(part)
-				);";
-				
-				dbDelta( $sql );
-			}	
 
 
 
@@ -144,11 +172,13 @@
 			}
 			
 			function sanitize_fontanel_tumblr_importer_api_key( $input ) {
+				$this->ugly_initialize();
 				$this->fetch_old_posts();
 				return $input['fontanel_tumblr_importer_api_key_field'];
 			}
 			
 			function sanitize_fontanel_tumblr_importer_blog_url( $input ) {
+				$this->ugly_initialize();
   			$this->fetch_old_posts();
 				return $input['fontanel_tumblr_importer_blog_url_field'];
 			}

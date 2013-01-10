@@ -14,7 +14,7 @@
 	if( file_exists( dirname(__FILE__) . '/fontanel-tumblr-importer.class.php' ) ) {
 		require_once( dirname(__FILE__) . '/fontanel-tumblr-importer.class.php' );
 	}	
-	
+
 	if ( class_exists( 'FontanelTumblrImporter' ) ):
 		$MyFontanelTumblrImporter = new FontanelTumblrImporter();
 	endif;

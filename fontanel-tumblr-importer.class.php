@@ -101,7 +101,7 @@
 	
 			private function fetch_post() {
 				$chandle = curl_init();
-				$url = 'http://api.tumblr.com/v2/blog/fnerdings.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' ) . '&limit=1';
+				$url = 'http://api.tumblr.com/v2/blog/' . get_option( 'fontanel_tumblr_importer_blog_url' ) . '/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' ) . '&limit=1';
 				curl_setopt( $chandle, CURLOPT_URL, $url );
 				curl_setopt( $chandle, CURLOPT_RETURNTRANSFER, 1 );
 				$result = curl_exec( $chandle );
@@ -127,7 +127,7 @@
 			
 			private function fetch_old_posts() {
 				$chandle = curl_init();
-				$url = 'http://api.tumblr.com/v2/blog/fnerdings.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' );
+				$url = 'http://api.tumblr.com/v2/blog/' . get_option( 'fontanel_tumblr_importer_blog_url' ) . '/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' );
 				curl_setopt( $chandle, CURLOPT_URL, $url );
 				curl_setopt( $chandle, CURLOPT_RETURNTRANSFER, 1 );
 				$result = curl_exec( $chandle );

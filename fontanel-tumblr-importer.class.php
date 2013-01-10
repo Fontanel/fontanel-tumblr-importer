@@ -158,7 +158,7 @@
 				add_settings_section( 'fontanel_tumblr_importer_section', 'General', array( &$this, 'render_fontanel_tumblr_importer_api_key_section' ), 'fontanel-tumblr-importer-options' );
 				add_settings_field( 'fontanel_tumblr_importer_api_key_field', 'Api Key', array( &$this, 'render_fontanel_tumblr_importer_api_key_field' ), 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_section' );
 				add_settings_field( 'fontanel_tumblr_importer_blog_url_field', 'Url (without \'http\' or \'www\')', array( &$this, 'render_fontanel_tumblr_importer_blog_url_field' ), 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_section' );
-				add_options_page( 'Fontanel Tumblr Importer Options', 'Tumlr Importer', 'manage_options', 'fontanel-tumblr-importer-options', array( &$this, 'render_options_admin' ) );
+				add_options_page( 'Fontanel Tumblr Importer Options', 'Tumblr Importer', 'manage_options', 'fontanel-tumblr-importer-options', array( &$this, 'render_options_admin' ) );
 			}
 			
 			function render_options_admin() {
@@ -231,9 +231,11 @@
 								<?php break; ?>
 								
 							<?php case 'quote': ?>
-								<blockquote><?php echo $tumblr_post->text; ?></blockquote>
+								<blockquote><p><?php echo $tumblr_post->text; ?></p></blockquote>
 								<?php if( $tumblr_post->source ): ?>
-									<p><?php echo $tumblr_post->source; ?></p>
+									<div class="caption">
+										<blockquote><p>{Source}</p></blockquote>
+									</div>
 								<?php endif; ?>
 								<?php break; ?>
 								

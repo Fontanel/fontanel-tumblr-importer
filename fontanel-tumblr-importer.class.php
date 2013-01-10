@@ -186,16 +186,8 @@
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ): ?>
 					<article>
-					
 						<?php switch( $tumblr_post->type ):
-							case 'link': ?>
-								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
-								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo $tumblr_post->description; ?></p>
-								<?php endif; ?>
-								<?php break; ?>
-							
-							<?php case 'text': ?>
+							case 'text': ?>
 								<?php if( $tumblr_post->title ): ?>
 									<h3><?php echo $tumblr_post->title; ?></h3>
 									<?php if( $tumblr_post->body ): ?>
@@ -204,10 +196,21 @@
 								<?php endif; ?>
 								<?php break; ?>
 								
+							<?php case 'photo': ?>
+								<p>Photos</p>
+								<?php break; ?>
+								
 							<?php case 'quote': ?>
 								<blockquote><?php echo $tumblr_post->text; ?></blockquote>
 								<?php if( $tumblr_post->source ): ?>
 									<p><?php echo $tumblr_post->source; ?></p>
+								<?php endif; ?>
+								<?php break; ?>
+								
+							<?php case 'link': ?>
+								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
+								<?php if( $tumblr_post->description ): ?>
+									<p><?php echo $tumblr_post->description; ?></p>
 								<?php endif; ?>
 								<?php break; ?>
 							
@@ -220,7 +223,7 @@
 						<?php endswitch; ?>
 						
 						<footer>
-							<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank"><?php echo $tumblr_post->title; ?></a> &raquo;</p>
+							<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">lees meer</a> &raquo;</p>
 						</footer>
 					</article>
 				<?php endif;

@@ -24,8 +24,8 @@
 			}
 			
 			function register_fontanel_tumblr_import_scripts() {
-				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array(), 1, true );
-				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array(), 1, true );
+				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery'), 1, true );
 				
 				wp_enqueue_script( 'waypoints' ); 
 				wp_enqueue_script( 'infinite-scroll' ); 

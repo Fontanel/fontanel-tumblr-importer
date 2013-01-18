@@ -13,7 +13,6 @@ if( $( '.waypoint' ).length > 0 ){
 			ajax_url,
 			{ page: next_page },
 			function( data, txt, jqXHR ) {
-				console.log(txt);
 				$( '#tumblr-posts-wrapper' ).append( data );
 				registerNewWaypointListener();
 				next_page++;

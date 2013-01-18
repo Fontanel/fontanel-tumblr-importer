@@ -215,7 +215,7 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ): ?>
-					<article>
+					<article class="tumblr-<?php echo $tumblr_post->type; ?>">
 						<?php switch( $tumblr_post->type ):
 							case 'text': ?>
 								<?php if( $tumblr_post->title ): ?>
@@ -248,7 +248,7 @@
 							<?php case 'link': ?>
 								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
 								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo $tumblr_post->description; ?></p>
+									<p><?php echo strip_tags( $tumblr_post->description ); ?></p>
 								<?php endif; ?>
 								<?php break; ?>
 							

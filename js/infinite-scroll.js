@@ -13,11 +13,9 @@ if( $( '.waypoint' ).length > 0 ){
 			ajax_url,
 			{ page: next_page },
 			function( data, txt, jqXHR ) {
-				$( '#tumblr-posts-wrapper' ).append( $( data ) );
-				if( $( data ).length > 0 ){
-					registerNewWaypointListener();
-					next_page++;
-				}
+				$( '#tumblr-posts-wrapper' ).append( data );
+				registerNewWaypointListener();
+				next_page++;
 			}
 		);
 	}

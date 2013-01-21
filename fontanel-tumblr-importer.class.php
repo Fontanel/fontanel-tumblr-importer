@@ -202,7 +202,7 @@
 		
 				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `part` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
 				
-				$tumblr_posts = []; // A storage for deserialized posts
+				$tumblr_posts = array(); // A storage for deserialized posts
 				
 				foreach( $raw_tumblr_posts as $raw_tumblr_post ):
 					$tumblr_posts[] = unserialize( $raw_tumblr_post->post );
@@ -215,7 +215,7 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ): ?>
-					<article>
+					<article class="tumblr-<?php echo $tumblr_post->type; ?>">
 						<?php switch( $tumblr_post->type ):
 							case 'text': ?>
 								<?php if( $tumblr_post->title ): ?>
@@ -224,10 +224,18 @@
 										<p><?php echo $tumblr_post->body; ?></p>
 									<?php endif; ?>
 								<?php endif; ?>
+								<footer>
+									<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">lees meer</a> &raquo;</p>
+								</footer>
 								<?php break; ?>
 								
 							<?php case 'photo': ?>
-								<p>Photos</p>
+								<?php foreach( array_slice( $tumblr_post->photos, 0, 4 ) as $key => $photo ): ?>
+									<?php $arindex = count( $photo->alt_sizes ) - 3; ?>
+									<a href="<?php echo $tumblr_post->post_url; ?>" class="tubmlr-image" target="_blank">
+										<div style="background-image: url('<?php echo $photo->alt_sizes[$arindex]->url; ?>');"></div>
+									</a>
+								<?php endforeach; ?>
 								<?php break; ?>
 								
 							<?php case 'quote': ?>
@@ -242,7 +250,7 @@
 							<?php case 'link': ?>
 								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
 								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo $tumblr_post->description; ?></p>
+									<p><?php echo strip_tags( $tumblr_post->description ); ?></p>
 								<?php endif; ?>
 								<?php break; ?>
 							
@@ -253,10 +261,6 @@
 							<?php default: ?>
 								<p>Unknown Tumblr format</p>
 						<?php endswitch; ?>
-						
-						<footer>
-							<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">lees meer</a> &raquo;</p>
-						</footer>
 					</article>
 				<?php endif;
 			}

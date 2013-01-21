@@ -10,8 +10,10 @@
 	
 	if ( class_exists( 'FontanelTumblrImporter' ) ):
 		$MyFontanelTumblrImporter = new FontanelTumblrImporter();
+		$result = "";
 		foreach( $MyFontanelTumblrImporter->getPosts( $_GET['page'], 5,  true ) as $tumblr_post ):
-			$MyFontanelTumblrImporter->defaultPostDisplay( $tumblr_post );
+			$result += $MyFontanelTumblrImporter->defaultPostDisplay( $tumblr_post );
 		endforeach;
+		$result;
 	endif;
 ?>

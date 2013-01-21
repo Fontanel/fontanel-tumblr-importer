@@ -202,7 +202,7 @@
 		
 				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `part` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
 				
-				$tumblr_posts = []; // A storage for deserialized posts
+				$tumblr_posts = array(); // A storage for deserialized posts
 				
 				foreach( $raw_tumblr_posts as $raw_tumblr_post ):
 					$tumblr_posts[] = unserialize( $raw_tumblr_post->post );

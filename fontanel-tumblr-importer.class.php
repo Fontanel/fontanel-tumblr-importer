@@ -230,12 +230,15 @@
 								<?php break; ?>
 								
 							<?php case 'photo': ?>
-								<?php foreach( array_slice( $tumblr_post->photos, 0, 4 ) as $key => $photo ): ?>
+								<?php foreach( array_slice( $tumblr_post->photos, 0, 3 ) as $key => $photo ): ?>
 									<?php $arindex = count( $photo->alt_sizes ) - 3; ?>
 									<a href="<?php echo $tumblr_post->post_url; ?>" class="tubmlr-image" target="_blank">
 										<div style="background-image: url('<?php echo $photo->alt_sizes[$arindex]->url; ?>');"></div>
 									</a>
 								<?php endforeach; ?>
+								<?php if ( $tumblr_post->caption ): ?>
+									<?php echo $tumblr_post->caption; ?>
+								<?php endif; ?>
 								<?php break; ?>
 								
 							<?php case 'quote': ?>
@@ -254,6 +257,9 @@
 							
 							<?php case 'video': ?>
 								<?php echo $tumblr_post->player[0]->embed_code; ?>
+								<?php if ( $tumblr_post->caption ): ?>
+									<?php echo $tumblr_post->caption; ?>
+								<?php endif; ?>
 								<?php break; ?>
 	
 							<?php default: ?>

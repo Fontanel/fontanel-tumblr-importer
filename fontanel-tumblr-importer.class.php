@@ -215,7 +215,13 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ): ?>
-					<article class="tumblr-<?php echo $tumblr_post->type; ?>">
+					<article class="tumblr-<?php echo $tumblr_post->type; ?><?php
+						if( $tumblr_post->type == 'photo' and count( $tumblr_post->photos ) == 1 ):
+							echo ' single-image';
+						elseif( $tumblr_post->type == 'photo' and count( $tumblr_post->photos ) == 2 ):
+							echo ' two-images';
+						endif;
+					?>">
 						<?php switch( $tumblr_post->type ):
 							case 'text': ?>
 								<?php if( $tumblr_post->title ): ?>

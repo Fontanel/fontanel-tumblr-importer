@@ -24,8 +24,8 @@
 			}
 			
 			function register_fontanel_tumblr_import_scripts() {
-				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array('jquery'), 1, true );
-				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array(), 1, true );
+				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array(), 1, true );
 				
 				wp_enqueue_script( 'waypoints' ); 
 				wp_enqueue_script( 'infinite-scroll' ); 
@@ -101,7 +101,7 @@
 	
 			private function fetch_post() {
 				$chandle = curl_init();
-				$url = 'http://api.tumblr.com/v2/blog/' . get_option( 'fontanel_tumblr_importer_blog_url' ) . '/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' ) . '&limit=1';
+				$url = 'http://api.tumblr.com/v2/blog/fontanel.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' ) . '&limit=1';
 				curl_setopt( $chandle, CURLOPT_URL, $url );
 				curl_setopt( $chandle, CURLOPT_RETURNTRANSFER, 1 );
 				$result = curl_exec( $chandle );
@@ -127,7 +127,7 @@
 			
 			private function fetch_old_posts() {
 				$chandle = curl_init();
-				$url = 'http://api.tumblr.com/v2/blog/' . get_option( 'fontanel_tumblr_importer_blog_url' ) . '/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' );
+				$url = 'http://api.tumblr.com/v2/blog/fontanel.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' );
 				curl_setopt( $chandle, CURLOPT_URL, $url );
 				curl_setopt( $chandle, CURLOPT_RETURNTRANSFER, 1 );
 				$result = curl_exec( $chandle );
@@ -158,7 +158,7 @@
 				add_settings_section( 'fontanel_tumblr_importer_section', 'General', array( &$this, 'render_fontanel_tumblr_importer_api_key_section' ), 'fontanel-tumblr-importer-options' );
 				add_settings_field( 'fontanel_tumblr_importer_api_key_field', 'Api Key', array( &$this, 'render_fontanel_tumblr_importer_api_key_field' ), 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_section' );
 				add_settings_field( 'fontanel_tumblr_importer_blog_url_field', 'Url (without \'http\' or \'www\')', array( &$this, 'render_fontanel_tumblr_importer_blog_url_field' ), 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_section' );
-				add_options_page( 'Fontanel Tumblr Importer Options', 'Tumlr Importer', 'manage_options', 'fontanel-tumblr-importer-options', array( &$this, 'render_options_admin' ) );
+				add_options_page( 'Fontanel Tumblr Importer Options', 'Tumblr Importer', 'manage_options', 'fontanel-tumblr-importer-options', array( &$this, 'render_options_admin' ) );
 			}
 			
 			function render_options_admin() {
@@ -242,9 +242,11 @@
 								<?php break; ?>
 								
 							<?php case 'quote': ?>
-								<blockquote><?php echo $tumblr_post->text; ?></blockquote>
+								<blockquote><p><?php echo $tumblr_post->text; ?></p></blockquote>
 								<?php if( $tumblr_post->source ): ?>
-									<p><?php echo $tumblr_post->source; ?></p>
+									<div class="caption">
+										<blockquote><p>{Source}</p></blockquote>
+									</div>
 								<?php endif; ?>
 								<?php break; ?>
 								

@@ -24,10 +24,10 @@
 			}
 			
 			function register_fontanel_tumblr_import_scripts() {
-				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array(), 1, true );
-				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array(), 1, true );
+				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery'), 1, true );
 				
-				wp_enqueue_script( 'waypoints' ); 
+				wp_enqueue_script( 'waypoints' );
 				wp_enqueue_script( 'infinite-scroll' ); 
 			}
 
@@ -101,7 +101,7 @@
 	
 			private function fetch_post() {
 				$chandle = curl_init();
-				$url = 'http://api.tumblr.com/v2/blog/' . get_option( 'fontanel_tumblr_importer_blog_url' ) . '/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' ) . '&limit=1';
+				$url = 'http://api.tumblr.com/v2/blog/fontanel.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' ) . '&limit=1';
 				curl_setopt( $chandle, CURLOPT_URL, $url );
 				curl_setopt( $chandle, CURLOPT_RETURNTRANSFER, 1 );
 				$result = curl_exec( $chandle );
@@ -127,7 +127,7 @@
 			
 			private function fetch_old_posts() {
 				$chandle = curl_init();
-				$url = 'http://api.tumblr.com/v2/blog/' . get_option( 'fontanel_tumblr_importer_blog_url' ) . '/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' );
+				$url = 'http://api.tumblr.com/v2/blog/fontanel.tumblr.com/posts?api_key=' . get_option( 'fontanel_tumblr_importer_api_key' );
 				curl_setopt( $chandle, CURLOPT_URL, $url );
 				curl_setopt( $chandle, CURLOPT_RETURNTRANSFER, 1 );
 				$result = curl_exec( $chandle );
@@ -158,7 +158,7 @@
 				add_settings_section( 'fontanel_tumblr_importer_section', 'General', array( &$this, 'render_fontanel_tumblr_importer_api_key_section' ), 'fontanel-tumblr-importer-options' );
 				add_settings_field( 'fontanel_tumblr_importer_api_key_field', 'Api Key', array( &$this, 'render_fontanel_tumblr_importer_api_key_field' ), 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_section' );
 				add_settings_field( 'fontanel_tumblr_importer_blog_url_field', 'Url (without \'http\' or \'www\')', array( &$this, 'render_fontanel_tumblr_importer_blog_url_field' ), 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_section' );
-				add_options_page( 'Fontanel Tumblr Importer Options', 'Tumlr Importer', 'manage_options', 'fontanel-tumblr-importer-options', array( &$this, 'render_options_admin' ) );
+				add_options_page( 'Fontanel Tumblr Importer Options', 'Tumblr Importer', 'manage_options', 'fontanel-tumblr-importer-options', array( &$this, 'render_options_admin' ) );
 			}
 			
 			function render_options_admin() {
@@ -200,9 +200,9 @@
 			public function getPosts( $page = 0, $rate = 5, $simple = true ) {
 				global $wpdb; // To be able to reach all db data
 		
-				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `part` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
+				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `time` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
 				
-				$tumblr_posts = []; // A storage for deserialized posts
+				$tumblr_posts = array(); // A storage for deserialized posts
 				
 				foreach( $raw_tumblr_posts as $raw_tumblr_post ):
 					$tumblr_posts[] = unserialize( $raw_tumblr_post->post );
@@ -215,7 +215,13 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ): ?>
-					<article>
+					<article class="tumblr-<?php echo $tumblr_post->type; ?><?php
+						if( $tumblr_post->type == 'photo' and count( $tumblr_post->photos ) == 1 ):
+							echo ' single-image';
+						elseif( $tumblr_post->type == 'photo' and count( $tumblr_post->photos ) == 2 ):
+							echo ' two-images';
+						endif;
+					?>">
 						<?php switch( $tumblr_post->type ):
 							case 'text': ?>
 								<?php if( $tumblr_post->title ): ?>
@@ -224,37 +230,49 @@
 										<p><?php echo $tumblr_post->body; ?></p>
 									<?php endif; ?>
 								<?php endif; ?>
+								<footer>
+									<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">lees meer</a> &raquo;</p>
+								</footer>
 								<?php break; ?>
 								
 							<?php case 'photo': ?>
-								<p>Photos</p>
+								<?php foreach( array_slice( $tumblr_post->photos, 0, 3 ) as $key => $photo ): ?>
+									<?php $arindex = count( $photo->alt_sizes ) - 3; ?>
+									<a href="<?php echo $tumblr_post->post_url; ?>" class="tubmlr-image" target="_blank">
+										<div style="background-image: url('<?php echo $photo->alt_sizes[$arindex]->url; ?>');"></div>
+									</a>
+								<?php endforeach; ?>
+								<?php if ( $tumblr_post->caption ): ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p>' ); ?>
+								<?php endif; ?>
 								<?php break; ?>
 								
 							<?php case 'quote': ?>
-								<blockquote><?php echo $tumblr_post->text; ?></blockquote>
+								<blockquote><p><?php echo $tumblr_post->text; ?></p></blockquote>
 								<?php if( $tumblr_post->source ): ?>
-									<p><?php echo $tumblr_post->source; ?></p>
+									<div class="caption">
+										<blockquote><p>{Source}</p></blockquote>
+									</div>
 								<?php endif; ?>
 								<?php break; ?>
 								
 							<?php case 'link': ?>
 								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
 								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo $tumblr_post->description; ?></p>
+									<p><?php echo strip_tags( $tumblr_post->description ); ?></p>
 								<?php endif; ?>
 								<?php break; ?>
 							
 							<?php case 'video': ?>
 								<?php echo $tumblr_post->player[0]->embed_code; ?>
+								<?php if ( $tumblr_post->caption ): ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p>' ); ?>
+								<?php endif; ?>
 								<?php break; ?>
 	
 							<?php default: ?>
 								<p>Unknown Tumblr format</p>
 						<?php endswitch; ?>
-						
-						<footer>
-							<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">lees meer</a> &raquo;</p>
-						</footer>
 					</article>
 				<?php endif;
 			}

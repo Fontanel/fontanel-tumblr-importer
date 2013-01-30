@@ -195,6 +195,19 @@
 				do_settings_fields( 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_api_key_field' );
 				do_settings_fields( 'fontanel-tumblr-importer-options', 'fontanel_tumblr_importer_blog_url_field' );
 			}
+			
+			function set_content_regexes( $regexes = array() ) {
+  			$this->content_regexes = $regexes;
+			}
+			
+			function execute_content_regexes( $input = '' ) {
+  		  if( count( $this->content_regexes ) > 0 ):
+    			foreach( $this->content_regexes as $key => $regex_set ):
+      			$input = preg_replace( $regex_set[0], $regex_set[1], $input );
+    			endforeach;
+    		endif;
+  			return $input;
+			}
 
 
 			public function getPosts( $page = 0, $rate = 5, $simple = true ) {
@@ -227,7 +240,7 @@
 								<?php if( $tumblr_post->title ): ?>
 									<h3><?php echo $tumblr_post->title; ?></h3>
 									<?php if( $tumblr_post->body ): ?>
-										<p><?php echo $tumblr_post->body; ?></p>
+										<p><?php echo $this->execute_content_regexes( $tumblr_post->body ); ?></p>
 									<?php endif; ?>
 								<?php endif; ?>
 								<footer>

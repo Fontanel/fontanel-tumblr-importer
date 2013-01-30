@@ -2,7 +2,7 @@
 /*
 	Plugin Name: Fontanel Tumblr Importer
 	Description: Periodically imports posts from a Tumblr blog
-	Version: 1.3
+	Version: 1.4
 	Author: Fontanel, Jasper Kennis
 	Author URI: http://fontanel.nl
 	License: None

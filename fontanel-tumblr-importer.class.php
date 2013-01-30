@@ -200,7 +200,7 @@
 			public function getPosts( $page = 0, $rate = 5, $simple = true ) {
 				global $wpdb; // To be able to reach all db data
 		
-				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `part` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
+				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `time` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
 				
 				$tumblr_posts = array(); // A storage for deserialized posts
 				

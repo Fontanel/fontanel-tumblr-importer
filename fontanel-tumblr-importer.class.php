@@ -21,6 +21,7 @@
 				register_activation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'activate_periodical_call' ) );
 				register_deactivation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'deactivate_periodical_call' ) );
 				register_activation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'create_tables' ) );
+				$this->set_content_regexes();
 			}
 			
 			function register_fontanel_tumblr_import_scripts() {
@@ -197,7 +198,11 @@
 			}
 			
 			function set_content_regexes( $regexes = array() ) {
-  			$this->content_regexes = $regexes;
+				// TODO: move this into the settings file
+				$my_regexes = array(
+	  		  array( '/\<iframe.*fontaneljobs\.nl\/roundup\/.*\<\/iframe\>/', '' )
+	  		);
+  			$this->content_regexes = $my_regexes;
 			}
 			
 			function execute_content_regexes( $input = '' ) {
@@ -256,7 +261,7 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a><h2>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								

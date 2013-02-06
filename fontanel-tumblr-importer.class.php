@@ -200,7 +200,8 @@
 			function set_content_regexes( $regexes = array() ) {
 				// TODO: move this into the settings file
 				$my_regexes = array(
-	  		  array( '/\<iframe.*fontaneljobs\.nl\/roundup\/.*\<\/iframe\>/', '' )
+	  		  array( '/\<iframe.*fontaneljobs\.nl\/roundup\/.*\<\/iframe\>/', '' ),
+	  		  array( '/\<h2(.*)\<\/h2>/', '<h4$1</h4>' )
 	  		);
   			$this->content_regexes = $my_regexes;
 			}
@@ -245,7 +246,8 @@
 								<?php if( $tumblr_post->title ): ?>
 									<h3><?php echo $tumblr_post->title; ?></h3>
 									<?php if( $tumblr_post->body ): ?>
-										<p><?php echo $this->execute_content_regexes( $tumblr_post->body ); ?></p>
+										<?php $body_text = preg_split( '/\<p.*\<\!\-\- more \-\-\>.*\<\/p\>/', $tumblr_post->body ); ?>
+										<p><?php echo $this->execute_content_regexes( $body_text[0] ); ?></p>
 									<?php endif; ?>
 								<?php endif; ?>
 								<footer>
@@ -261,7 +263,7 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a><h2>' ); ?>
+									<?php echo $this->execute_content_regexes( strip_tags( $tumblr_post->caption, '<p><a><h2>' ) ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								

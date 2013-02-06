@@ -16,6 +16,8 @@ if( $( '.waypoint' ).length > 0 ){
 				$( '#tumblr-posts-wrapper' ).append( data );
 				registerNewWaypointListener();
 				next_page++;
+				// TODO: make this generic, probably attach an event
+				$('#blog').fitVids(); // Update the video width
 			}
 		);
 	}

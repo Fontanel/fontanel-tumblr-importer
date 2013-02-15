@@ -227,7 +227,11 @@
 			}
 			
 			public function defaultPostDisplay( $tumblr_post ) {
-				if( $tumblr_post->state == 'published' ): ?>
+				if( $tumblr_post->state == 'published' ):
+					setlocale('LC_ALL', WPLANG);
+					$original_date = $tumblr_post->date;
+					$posted_date = strftime( "%e %B %Y", strtotime( $original_date ) );
+					?>
 					<article class="tumblr-<?php echo $tumblr_post->type; ?><?php
 						if( $tumblr_post->type == 'photo' and count( $tumblr_post->photos ) == 1 ):
 							echo ' single-image';
@@ -286,6 +290,7 @@
 							<?php default: ?>
 								<p>Unknown Tumblr format</p>
 						<?php endswitch; ?>
+						<footer><p>Geplaatst op <time><?php echo $posted_date; ?></time></p></footer>
 					</article>
 				<?php endif;
 			}

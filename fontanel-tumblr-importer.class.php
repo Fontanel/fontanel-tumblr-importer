@@ -260,7 +260,7 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								

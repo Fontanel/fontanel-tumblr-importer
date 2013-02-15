@@ -260,7 +260,7 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a><h2>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								
@@ -283,7 +283,7 @@
 							<?php case 'video': ?>
 								<?php echo $tumblr_post->player[0]->embed_code; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a><h2>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 	

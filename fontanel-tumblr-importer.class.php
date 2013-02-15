@@ -283,7 +283,7 @@
 							<?php case 'video': ?>
 								<?php echo $tumblr_post->player[0]->embed_code; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 	

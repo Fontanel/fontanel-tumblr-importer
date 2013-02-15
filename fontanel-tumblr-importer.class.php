@@ -257,7 +257,7 @@
 								
 							<?php case 'photo': ?>
 								<?php foreach( array_slice( $tumblr_post->photos, 0, 3 ) as $key => $photo ): ?>
-									<?php $arindex = count( $photo->alt_sizes ) - 3; ?>
+									<?php $arindex = 1; ?>
 									<a href="<?php echo $tumblr_post->post_url; ?>" class="tubmlr-image" target="_blank">
 										<div style="background-image: url('<?php echo $photo->alt_sizes[$arindex]->url; ?>');"></div>
 									</a>

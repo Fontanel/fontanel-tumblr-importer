@@ -250,10 +250,10 @@
 							case 'text': ?>
 								<?php if( $tumblr_post->title ): ?>
 									<h3><?php echo $tumblr_post->title; ?></h3>
-									<?php if( $tumblr_post->body ): ?>
-										<?php $body_text = preg_split( '/\<p.*\<\!\-\- more \-\-\>.*\<\/p\>/', $tumblr_post->body ); ?>
-										<p><?php echo $this->execute_content_regexes( $body_text[0] ); ?></p>
-									<?php endif; ?>
+								<?php endif; ?>
+								<?php if( $tumblr_post->body ): ?>
+									<?php $body_text = preg_split( '/\<p.*\<\!\-\- more \-\-\>.*\<\/p\>/', $tumblr_post->body ); ?>
+									<p><?php echo $this->execute_content_regexes( $body_text[0] ); ?></p>
 								<?php endif; ?>
 								<footer>
 									<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">lees meer</a> &raquo;</p>

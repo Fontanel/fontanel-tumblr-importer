@@ -21,11 +21,13 @@
 				register_activation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'activate_periodical_call' ) );
 				register_deactivation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'deactivate_periodical_call' ) );
 				register_activation_hook( $this->plugin_symlink_path( __FILE__ ), array( &$this, 'create_tables' ) );
+				$this->set_content_regexes();
 			}
 			
 			function register_fontanel_tumblr_import_scripts() {
 				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array('jquery'), 1, true );
-				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'spin', plugins_url( '/js/spin.min.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery','waypoints','spin'), 1, true );
 				
 				wp_enqueue_script( 'waypoints' );
 				wp_enqueue_script( 'infinite-scroll' ); 
@@ -197,7 +199,12 @@
 			}
 			
 			function set_content_regexes( $regexes = array() ) {
-  			$this->content_regexes = $regexes;
+				// TODO: move this into the settings file
+				$my_regexes = array(
+	  		  array( '/\<iframe.*fontaneljobs\.nl\/roundup\/.*\<\/iframe\>/', '' ),
+	  		  array( '/\<h2(.*)\<\/h2>/', '<h4$1</h4>' )
+	  		);
+  			$this->content_regexes = $my_regexes;
 			}
 			
 			function execute_content_regexes( $input = '' ) {
@@ -228,9 +235,9 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ):
-					setlocale('LC_ALL', WPLANG);
-					$original_date = $tumblr_post->date;
-					$posted_date = strftime( "%e %B %Y", strtotime( $original_date ) );
+						setlocale(LC_ALL, WPLANG);
+						$original_date = $tumblr_post->date;
+						$posted_date = strftime( "%e %B %Y", strtotime( $original_date ) );
 					?>
 					<article class="tumblr-<?php echo $tumblr_post->type; ?><?php
 						if( $tumblr_post->type == 'photo' and count( $tumblr_post->photos ) == 1 ):
@@ -243,9 +250,10 @@
 							case 'text': ?>
 								<?php if( $tumblr_post->title ): ?>
 									<h3><?php echo $tumblr_post->title; ?></h3>
-									<?php if( $tumblr_post->body ): ?>
-										<p><?php echo $this->execute_content_regexes( $tumblr_post->body ); ?></p>
-									<?php endif; ?>
+								<?php endif; ?>
+								<?php if( $tumblr_post->body ): ?>
+									<?php $body_text = preg_split( '/\<p.*\<\!\-\- more \-\-\>.*\<\/p\>/', $tumblr_post->body ); ?>
+									<p><?php echo $this->execute_content_regexes( $body_text[0] ); ?></p>
 								<?php endif; ?>
 								<footer>
 									<p><a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">lees meer</a> &raquo;</p>
@@ -260,7 +268,7 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a><h2>' ); ?>
+									<?php echo $this->execute_content_regexes( strip_tags( $tumblr_post->caption, '<p><a><h2><q><quote><blockquote>' ) ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								
@@ -276,14 +284,14 @@
 							<?php case 'link': ?>
 								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
 								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo strip_tags( $tumblr_post->description ); ?></p>
+									<p><?php echo strip_tags( $tumblr_post->description, '<a><q><quote><blockquote>' ); ?></p>
 								<?php endif; ?>
 								<?php break; ?>
 							
 							<?php case 'video': ?>
 								<?php echo $tumblr_post->player[0]->embed_code; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a><h2>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a><q><quote><blockquote>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 	

@@ -26,7 +26,8 @@
 			
 			function register_fontanel_tumblr_import_scripts() {
 				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array('jquery'), 1, true );
-				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'spin', plugins_url( '/js/spin.min.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery','waypoints','spin'), 1, true );
 				
 				wp_enqueue_script( 'waypoints' );
 				wp_enqueue_script( 'infinite-scroll' ); 
@@ -233,7 +234,11 @@
 			}
 			
 			public function defaultPostDisplay( $tumblr_post ) {
-				if( $tumblr_post->state == 'published' ): ?>
+				if( $tumblr_post->state == 'published' ):
+						setlocale('LC_ALL', WPLANG);
+						$original_date = $tumblr_post->date;
+						$posted_date = strftime( "%e %B %Y", strtotime( $original_date ) );
+					?>
 					<article class="tumblr-<?php echo $tumblr_post->type; ?><?php
 						if( $tumblr_post->type == 'photo' and count( $tumblr_post->photos ) == 1 ):
 							echo ' single-image';
@@ -257,7 +262,7 @@
 								
 							<?php case 'photo': ?>
 								<?php foreach( array_slice( $tumblr_post->photos, 0, 3 ) as $key => $photo ): ?>
-									<?php $arindex = count( $photo->alt_sizes ) - 3; ?>
+									<?php $arindex = 1; ?>
 									<a href="<?php echo $tumblr_post->post_url; ?>" class="tubmlr-image" target="_blank">
 										<div style="background-image: url('<?php echo $photo->alt_sizes[$arindex]->url; ?>');"></div>
 									</a>
@@ -293,6 +298,7 @@
 							<?php default: ?>
 								<p>Unknown Tumblr format</p>
 						<?php endswitch; ?>
+						<footer><p>Geplaatst op <time><?php echo $posted_date; ?></time></p></footer>
 					</article>
 				<?php endif;
 			}

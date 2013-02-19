@@ -268,7 +268,7 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo $this->execute_content_regexes( strip_tags( $tumblr_post->caption, '<p><a><h2>' ) ); ?>
+									<?php echo $this->execute_content_regexes( strip_tags( $tumblr_post->caption, '<p><a><h2><q><quote><blockquote>' ) ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								
@@ -284,14 +284,14 @@
 							<?php case 'link': ?>
 								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
 								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo strip_tags( $tumblr_post->description, '<a>' ); ?></p>
+									<p><?php echo strip_tags( $tumblr_post->description, '<a><q><quote><blockquote>' ); ?></p>
 								<?php endif; ?>
 								<?php break; ?>
 							
 							<?php case 'video': ?>
 								<?php echo $tumblr_post->player[0]->embed_code; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a><q><quote><blockquote>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 	

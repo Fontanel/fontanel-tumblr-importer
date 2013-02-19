@@ -235,7 +235,7 @@
 			
 			public function defaultPostDisplay( $tumblr_post ) {
 				if( $tumblr_post->state == 'published' ):
-						setlocale('LC_ALL', WPLANG);
+						setlocale(LC_ALL, WPLANG);
 						$original_date = $tumblr_post->date;
 						$posted_date = strftime( "%e %B %Y", strtotime( $original_date ) );
 					?>

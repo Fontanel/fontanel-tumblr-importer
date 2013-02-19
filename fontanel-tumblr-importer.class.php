@@ -26,7 +26,8 @@
 			
 			function register_fontanel_tumblr_import_scripts() {
 				wp_register_script( 'waypoints', plugins_url( '/js/waypoints.min.js', __FILE__ ), array('jquery'), 1, true );
-				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'spin', plugins_url( '/js/spin.min.js', __FILE__ ), array('jquery'), 1, true );
+				wp_register_script( 'infinite-scroll', plugins_url( '/js/infinite-scroll.js', __FILE__ ), array('jquery','waypoints','spin'), 1, true );
 				
 				wp_enqueue_script( 'waypoints' );
 				wp_enqueue_script( 'infinite-scroll' ); 
@@ -267,7 +268,7 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo $this->execute_content_regexes( strip_tags( $tumblr_post->caption, '<p><a><h2>' ) ); ?>
+									<?php echo $this->execute_content_regexes( strip_tags( $tumblr_post->caption, '<p><a><h2><q><quote><blockquote>' ) ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								
@@ -283,14 +284,14 @@
 							<?php case 'link': ?>
 								<h3><a href="<?php $tumblr_post->url ?>"><?php echo $tumblr_post->title ? $tumblr_post->title : $tumblr_post->post_url; ?></a></h3>
 								<?php if( $tumblr_post->description ): ?>
-									<p><?php echo strip_tags( $tumblr_post->description, '<a>' ); ?></p>
+									<p><?php echo strip_tags( $tumblr_post->description, '<a><q><quote><blockquote>' ); ?></p>
 								<?php endif; ?>
 								<?php break; ?>
 							
 							<?php case 'video': ?>
 								<?php echo $tumblr_post->player[0]->embed_code; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo strip_tags( $tumblr_post->caption, '<p><a>' ); ?>
+									<?php echo strip_tags( $tumblr_post->caption, '<p><a><q><quote><blockquote>' ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 	

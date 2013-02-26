@@ -26,7 +26,7 @@ InfiniteScroll = (function() {
   };
 
   InfiniteScroll.prototype.waypoint_args = {
-    offset: '100%',
+    offset: '110%',
     triggerOnce: true,
     onlyOnScroll: true
   };
@@ -56,9 +56,12 @@ InfiniteScroll = (function() {
     });
   };
 
-  InfiniteScroll.prototype.registerNewWaypointListener = function() {
+  InfiniteScroll.prototype.registerNewWaypointListener = function(element) {
     var _this = this;
-    return $('.waypoint').waypoint(function(el, dir) {
+    if (element == null) {
+      element = $('.waypoint');
+    }
+    return element.waypoint(function(el, dir) {
       return _this.fetchAndProcessNewPosts();
     }, this.waypoint_args);
   };
@@ -67,7 +70,7 @@ InfiniteScroll = (function() {
     var new_waypoint;
     new_waypoint = $('<div></div>').addClass('waypoint');
     $('#tumblr-posts-wrapper').after(new_waypoint);
-    return this.registerNewWaypointListener();
+    return this.registerNewWaypointListener(new_waypoint);
   };
 
   return InfiniteScroll;

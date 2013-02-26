@@ -21,7 +21,7 @@ class InfiniteScroll
 		left: 'auto' # Left position relative to parent in px
 	
 	waypoint_args:
-		offset: '100%'
+		offset: '110%'
 		triggerOnce: true
 		onlyOnScroll: true
 	
@@ -45,15 +45,15 @@ class InfiniteScroll
 				spinner.stop()
 				target.remove()
 
-	registerNewWaypointListener: ->
-		$('.waypoint').waypoint ( el, dir ) =>
+	registerNewWaypointListener: ( element = $('.waypoint') ) ->
+		element.waypoint ( el, dir ) =>
 			@fetchAndProcessNewPosts()
 		, @waypoint_args
 	
 	createNewWaypoint: ->
-		new_waypoint = $('<div></div>').addClass('waypoint')
+		new_waypoint = $('<div></div>').addClass 'waypoint'
 		$( '#tumblr-posts-wrapper' ).after new_waypoint
-		@registerNewWaypointListener()
+		@registerNewWaypointListener new_waypoint
 
 if $( '.waypoint' ).length > 0
 	infiniteScroll = new InfiniteScroll

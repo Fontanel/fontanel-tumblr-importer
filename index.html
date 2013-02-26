@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Fontanel Tumblr Importer for WordPress by jasperkennis</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Fontanel Tumblr Importer for WordPress</h1>
+        <p>A WordPress plugin that periodically imports the newest post from a tumblr blog and helps to display these posts on a WordPress blog.</p>
+
+        <p class="view"><a href="https://github.com/jasperkennis/fontanel-tumblr-importer">View the Project on GitHub <small>jasperkennis/fontanel-tumblr-importer</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/jasperkennis/fontanel-tumblr-importer/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/jasperkennis/fontanel-tumblr-importer/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/jasperkennis/fontanel-tumblr-importer">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>Fontanel Tumblr Importer for WordPress</h1>
+
+<p>Fontanel Tumblr Importer is a small WordPress plugin that periodically imports the latest post from a tumblr blog. At the moment it's still very rough but as it's going to be part of the new Fontanel Magazine, it is likely to improve very soon.</p>
+
+<h2>Installation</h2>
+
+<p>Add the source to your WordPress plugins folder, and activate it from the WordPress admin as you would with any plugin. <strong>After activating the plugin you have to add the blog url and a Tumblr API key in the settings menu.</strong> If you don't have an API key jet you can get one <a href="http://www.tumblr.com/oauth/apps">here</a>.</p>
+
+<p>Also note that the plugin uses WordPress' scheduling hook <a href="http://codex.wordpress.org/Function_Reference/wp_schedule_event">wp_schedule_event</a> which doesn't fire unless a visitor comes to your blog. The plugin currently tries to fetch the newest Tumblr post every five minutes, but only if someone visits your website within these five minutes. If this is a problem for you, you could set up a cronjob to call your sites' url every five minutes.</p>
+
+<p>We like feedback, please <a href="https://github.com/jasperkennis/fontanel-tumblr-importer/issues">create an issue</a> if you have an idea or need help.</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/jasperkennis">jasperkennis</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>

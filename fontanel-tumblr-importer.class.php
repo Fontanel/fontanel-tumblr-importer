@@ -174,9 +174,14 @@
 				}
 			}
 			
+			
 			function sanitize_fontanel_tumblr_importer_api_key( $input ) {
 				$this->ugly_initialize();
 				$this->fetch_old_posts();
+				if( isset( $_POST['delete_by_id'] ) ):
+				  $toDelete = str_replace('Verwijder ', '', $_POST['delete_by_id'] );
+				  $this->delete_post( $toDelete );
+				endif;
 				return $input['fontanel_tumblr_importer_api_key_field'];
 			}
 			
@@ -218,15 +223,21 @@
 			}
 
 
+			function delete_post( $part ) {
+  			global $wpdb; // To be able to reach all db data
+		
+				$wpdb->query( "DELETE FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` WHERE `part`=" . $part . ";" );
+			}
+
 			public function getPosts( $page = 0, $rate = 5, $simple = true ) {
 				global $wpdb; // To be able to reach all db data
 		
-				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `time` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
+				$raw_tumblr_posts = $wpdb->get_results( "SELECT `post`, `part` FROM `" . FONTANEL_TUMBLR_IMPORTER_TABLE_NAME . "` ORDER BY `time` DESC LIMIT " . ( $page * $rate ) . ", " . $rate ); // Query for the serialized posts
 				
 				$tumblr_posts = array(); // A storage for deserialized posts
 				
 				foreach( $raw_tumblr_posts as $raw_tumblr_post ):
-					$tumblr_posts[] = unserialize( $raw_tumblr_post->post );
+					$tumblr_posts[ $raw_tumblr_post->part ] = unserialize( $raw_tumblr_post->post );
 				endforeach;
 				
 				if( $simple ):

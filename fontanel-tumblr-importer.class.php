@@ -282,6 +282,9 @@
 								<?php if ( $tumblr_post->caption ): ?>
   								<?php $body_text = preg_split( '/\<p.*\<\!\-\- more \-\-\>.*\<\/p\>/', $tumblr_post->caption ); ?>
 									<?php echo $this->execute_content_regexes( strip_tags( $body_text[0], '<p><a><h2><q><quote><blockquote>' ) ); ?>
+									<?php if( !empty($body_text[1]) ): ?>
+									  <p>&raquo; <a href="<?php echo $tumblr_post->post_url; ?>" target="_blank">Lees meer</a></p>
+									<?php endif; ?>
 								<?php endif; ?>
 								<?php break; ?>
 								

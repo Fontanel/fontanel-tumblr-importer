@@ -280,7 +280,8 @@
 									</a>
 								<?php endforeach; ?>
 								<?php if ( $tumblr_post->caption ): ?>
-									<?php echo $this->execute_content_regexes( strip_tags( $tumblr_post->caption, '<p><a><h2><q><quote><blockquote>' ) ); ?>
+  								<?php $body_text = preg_split( '/\<p.*\<\!\-\- more \-\-\>.*\<\/p\>/', $tumblr_post->caption ); ?>
+									<?php echo $this->execute_content_regexes( strip_tags( $body_text[0], '<p><a><h2><q><quote><blockquote>' ) ); ?>
 								<?php endif; ?>
 								<?php break; ?>
 								
